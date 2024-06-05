@@ -22,13 +22,13 @@ jobs:
         terraform_version: 1.0.0
 
     - name: Write GCP Credentials to File
-      run: echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" > $TF-GCS/gcloud-service-key.json
+      run: echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" > $HOME/gcloud-service-key.json
 
     - name: Print environment variables
       run: |
         echo "PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}"
         echo "GCP_SERVICE_ACCOUNT_KEY:"
-        cat $TF-GCS/gcloud-service-key.json
+        cat $HOME/gcloud-service-key.json
 
     # - name: Configure GCP Credentials
     #   uses: google-github-actions/setup-gcloud@v0.2.0
