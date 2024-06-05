@@ -29,8 +29,9 @@ jobs:
 
     - name: Run setup script
       run: |
-        chmod +x "./Cloud\ function\ creation/gcp_permissions.sh"
-        "./Cloud\ function\ creation/gcp_permissions.sh" ${{ secrets.IGJ_GCP_PROJ_ID }} resource-creation@${{ secrets.IGJ_GCP_PROJ_ID }}.iam.gserviceaccount.com $HOME/gcloud-service-key.json
+        cd "Cloud function creation"
+        chmod +x ./gcp_permissions.sh
+        ./gcp_permissions.sh ${{ secrets.IGJ_GCP_PROJ_ID }} resource-creation@${{ secrets.IGJ_GCP_PROJ_ID }}.iam.gserviceaccount.com $HOME/gcloud-service-key.json
 
     - name: Run deployment script
       run: |
