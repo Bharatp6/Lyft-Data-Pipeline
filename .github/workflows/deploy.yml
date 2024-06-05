@@ -30,7 +30,7 @@ jobs:
 
     - name: Run deployment script
       run: |
-        cd Cloud function creation
+        cd "Cloud function creation"
         chmod +x ./deploy.sh
         ./deploy.sh
       env:
