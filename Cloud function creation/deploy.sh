@@ -5,7 +5,7 @@ FUNCTION_NAME="fetch_station_status"
 REGION="us-central1"
 RUNTIME="python39"
 ENTRY_POINT="get_station_status"
-FUNCTION_DIR="Lyft-Data-Pipeline/Cloud-Function-Data-Ingest/"  # The directory containing main.py and requirements.txt
+FUNCTION_DIR="Cloud-Function-Data-Ingest/"  # The directory containing main.py and requirements.txt
 
 # Authenticate with Google Cloud using the service account
 gcloud auth activate-service-account --key-file=$KEY_FILE_PATH
