@@ -70,4 +70,3 @@ jobs:
     - name: Upload Function Code
       run: |
         gsutil cp tf_create_cf/get_station_status.zip gs://${{ secrets.GCP_PROJECT_ID }}-function-bucket/get_station_status.zip
-``
