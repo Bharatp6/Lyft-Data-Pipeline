@@ -33,19 +33,11 @@ resource "google_cloudfunctions2_function" "function" {
 
   service_config {
     service_account_email = "cloud-function-service-account@${var.project_id}.iam.gserviceaccount.com"
-    min_instance_count    = 0
-    max_instance_count    = 1
-    available_memory_mb   = 128
+    max_instance_count  = 1
+    available_memory    = "256M"
+    timeout_seconds     = 60
     ingress_settings      = "ALLOW_ALL"
   }
-
-  event_trigger {
-    trigger_region = var.region
-    event_type     = "google.cloud.functions.v2.function.v1.published"
-    resource       = "projects/${var.project_id}/topics/my-topic"
-  }
-
-  trigger_http = true
 }
 
 resource "google_cloudfunctions2_function_iam_member" "noauth_invoker" {
