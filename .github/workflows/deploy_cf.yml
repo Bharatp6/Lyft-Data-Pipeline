@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -47,11 +48,13 @@ jobs:
       working-directory: tf_create_cf
 
     - name: Plan Terraform
-      run: terraform plan -out=tfplan
+      run: terraform plan -out=tfplan -parallelism=10
       working-directory: tf_create_cf
+      env:
+        TF_LOG: DEBUG
 
     - name: Apply Terraform
-      run: terraform apply -auto-approve tfplan
+      run: terraform apply -auto-approve tfplan -parallelism=10
       working-directory: tf_create_cf
 
     - name: Upload Function Code
