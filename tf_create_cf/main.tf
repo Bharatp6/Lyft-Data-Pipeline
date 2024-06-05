@@ -68,7 +68,3 @@ output "url" {
   value = google_cloudfunctions_function.function.https_trigger_url
 }
 
-variable "project_id" {}
-variable "region" {
-  default = "us-central1"
-}
