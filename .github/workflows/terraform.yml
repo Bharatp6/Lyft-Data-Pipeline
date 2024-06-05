@@ -38,7 +38,7 @@ jobs:
         GOOGLE_CREDENTIALS: $HOME/gcloud-service-key.json
 
     - name: Terraform Plan
-      run: terraform plan -out=tfplan -var="project_id=${{ secrets.GCP_PROJECT_ID }}" -var="credentials_file=$HOME/gcloud-service-key.json" -var="bucket_name=your-bucket-name"
+      run: terraform plan -out=tfplan -var="project_id=${{ secrets.GCP_PROJECT_ID }}" -var="credentials_file=$HOME/gcloud-service-key.json" -var="bucket_name=get_station_status"
       working-directory: ./TF-GCS
       env:
         GOOGLE_CREDENTIALS: $HOME/gcloud-service-key.json
