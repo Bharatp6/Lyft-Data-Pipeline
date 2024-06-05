@@ -26,7 +26,7 @@ jobs:
         service_account_key: ${{ secrets.ICJ007_SERVICE_ACC_KEY }}
 
     - name: Authenticate to Google Cloud
-      run: echo "${{ secrets.ICJ007_SERVICE_ACC_KEY }}" | base64 --decode > $HOME/gcloud-service-key.json
+      run: echo "${{ secrets.ICJ007_SERVICE_ACC_KEY }}" #> $HOME/gcloud-service-key.json
 
     - name: Run setup script
       run: |
@@ -39,6 +39,6 @@ jobs:
         chmod +x ./deploy.sh
         ./deploy.sh
       env:
-        GOOGLE_APPLICATION_CREDENTIALS: $HOME/gcloud-service-key.json
+        GOOGLE_APPLICATION_CREDENTIALS: "${{ secrets.ICJ007_SERVICE_ACC_KEY }}" #$HOME/gcloud-service-key.json
         PROJECT_ID: ${{ secrets.IGJ007_GCP_PROJ_ID }}
-        KEY_FILE_PATH: $HOME/gcloud-service-key.json
+        KEY_FILE_PATH: "${{ secrets.ICJ007_SERVICE_ACC_KEY }}" #$HOME/gcloud-service-key.json
