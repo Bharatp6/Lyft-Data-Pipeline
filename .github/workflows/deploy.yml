@@ -22,23 +22,22 @@ jobs:
       uses: google-github-actions/setup-gcloud@v0.2.1
       with:
         version: 'latest'
-        project_id: ${{ secrets.IGJ007_GCP_PROJ_ID }}
-        service_account_key: ${{ secrets.ICJ007_SERVICE_ACC_KEY }}
+        project_id: ${{ secrets.IGJ_GCP_PROJ_ID }}
 
-    - name: Authenticate to Google Cloud
-      run: echo "${{ secrets.ICJ007_SERVICE_ACC_KEY }}" #> $HOME/gcloud-service-key.json
+    - name: Write service account key to file
+      run: echo "${{ secrets.ICJ007_SERVICE_ACC_KEY }}" > $HOME/gcloud-service-key.json
 
     - name: Run setup script
       run: |
-        chmod +x ./Cloud\ function\ creation/gcp_permissions.sh
-        ./Cloud\ function\ creation/gcp_permissions.sh ${{ secrets.IGJ007_GCP_PROJ_ID }} resource-creation@${{ secrets.IGJ007_GCP_PROJ_ID }}.iam.gserviceaccount.com $HOME/gcloud-service-key.json
+        chmod +x ./Lyft-Data-Pipeline/Cloud\ function\ creation/gcp_permissions.sh
+        ./Lyft-Data-Pipeline/Cloud\ function\ creation/gcp_permissions.sh ${{ secrets.IGJ_GCP_PROJ_ID }} resource-creation@${{ secrets.IGJ_GCP_PROJ_ID }}.iam.gserviceaccount.com $HOME/gcloud-service-key.json
 
     - name: Run deployment script
       run: |
-        cd Cloud\ function\ creation
+        cd Lyft-Data-Pipeline/Cloud\ function\ creation
         chmod +x ./deploy.sh
         ./deploy.sh
       env:
-        GOOGLE_APPLICATION_CREDENTIALS: "${{ secrets.ICJ007_SERVICE_ACC_KEY }}" #$HOME/gcloud-service-key.json
-        PROJECT_ID: ${{ secrets.IGJ007_GCP_PROJ_ID }}
-        KEY_FILE_PATH: "${{ secrets.ICJ007_SERVICE_ACC_KEY }}" #$HOME/gcloud-service-key.json
+        GOOGLE_APPLICATION_CREDENTIALS: $HOME/gcloud-service-key.json
+        PROJECT_ID: ${{ secrets.IGJ_GCP_PROJ_ID }}
+        KEY_FILE_PATH: $HOME/gcloud-service-key.json
