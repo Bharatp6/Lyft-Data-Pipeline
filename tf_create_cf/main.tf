@@ -40,9 +40,6 @@ resource "google_cloudfunctions2_function" "function" {
     ingress_settings      = "ALLOW_ALL"
   }
 
-  https_trigger {
-    security_level = "SECURE_OPTIONAL"
-  }
 }
 
 resource "google_cloudfunctions2_function_iam_member" "noauth_invoker" {
