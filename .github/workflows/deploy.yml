@@ -29,12 +29,12 @@ jobs:
 
     - name: Run setup script
       run: |
-        chmod +x ./Lyft-Data-Pipeline/Cloud\ function\ creation/gcp_permissions.sh
+        chmod +x ./Cloud\ function\ creation/gcp_permissions.sh
         ./Lyft-Data-Pipeline/Cloud\ function\ creation/gcp_permissions.sh ${{ secrets.IGJ_GCP_PROJ_ID }} resource-creation@${{ secrets.IGJ_GCP_PROJ_ID }}.iam.gserviceaccount.com $HOME/gcloud-service-key.json
 
     - name: Run deployment script
       run: |
-        cd Lyft-Data-Pipeline/Cloud\ function\ creation
+        cd /Cloud\ function\ creation
         chmod +x ./deploy.sh
         ./deploy.sh
       env:
