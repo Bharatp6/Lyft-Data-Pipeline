@@ -1,0 +1,48 @@
+name: Terraform GCS Bucket
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.0.0
+
+    - name: Write GCP Credentials to File
+      run: echo "${{ secrets.ICJ007_SERVICE_ACC_KEY }}" > $HOME/gcloud-service-key.json
+
+    - name: Configure GCP Credentials
+      uses: google-github-actions/setup-gcloud@v0.2.0
+      with:
+        version: 'latest'
+        project_id: ${{ secrets.IGJ_GCP_PROJ_ID }}
+        service_account_key: ${{ secrets.ICJ007_SERVICE_ACC_KEY }}
+
+    - name: Terraform Init
+      run: terraform init
+      env:
+        GOOGLE_CREDENTIALS: $HOME/gcloud-service-key.json
+
+    - name: Terraform Plan
+      run: terraform plan -out=tfplan -var="project_id=${{ secrets.IGJ_GCP_PROJ_ID }}" -var="credentials_file=$HOME/gcloud-service-key.json" -var="bucket_name=get_station_status"
+      env:
+        GOOGLE_CREDENTIALS: $HOME/gcloud-service-key.json
+
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: terraform apply -auto-approve tfplan
+      env:
+        GOOGLE_CREDENTIALS: $HOME/gcloud-service-key.json
