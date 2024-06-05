@@ -21,37 +21,49 @@ jobs:
       with:
         terraform_version: 1.0.0
 
-    - name: Write GCP Credentials to File
-      run: echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" > $HOME/gcloud-service-key.json
+    - name: Create JSON credentials file
+      id: create-json-credentials
+      uses: jsdaniell/create-json@v1.2.3
+      with:
+        name: "TF-GCS/gcloud-service-key.json"
+        json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
+    - name: Create JSON project ID file
+      id: create-json-project-id
+      uses: jsdaniell/create-json@v1.2.3
+      with:
+        name: "TF-GCS/project-id.json"
+        json: '{"project_id": "${{ secrets.GCP_PROJECT_ID }}"}'
 
     - name: Print environment variables
       run: |
-        echo "PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}"
+        echo "PROJECT_ID:"
+        cat TF-GCS/project-id.json
         echo "GCP_SERVICE_ACCOUNT_KEY:"
-        cat $HOME/gcloud-service-key.json
+        cat TF-GCS/gcloud-service-key.json
 
-    # - name: Configure GCP Credentials
-    #   uses: google-github-actions/setup-gcloud@v0.2.0
-    #   with:
-    #     version: 'latest'
-    #     project_id: ${{ secrets.GCP_PROJECT_ID }}
-    #     service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+    - name: Configure GCP Credentials
+      uses: google-github-actions/setup-gcloud@v0.2.0
+      with:
+        version: 'latest'
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
 
-    # - name: Terraform Init
-    #   run: terraform init
-    #   working-directory: ./TF-GCS
-    #   env:
-    #     GOOGLE_CREDENTIALS: $HOME/gcloud-service-key.json
+    - name: Terraform Init
+      run: terraform init
+      working-directory: ./TF-GCS
+      env:
+        GOOGLE_CREDENTIALS: TF-GCS/gcloud-service-key.json
 
-    # - name: Terraform Plan
-    #   run: terraform plan -out=tfplan -var="project_id=igj007" -var="credentials_file=igj007-a263924715a0.json" -var="bucket_name=get_station_status"
-    #   working-directory: ./TF-GCS
-    #   env:
-    #     GOOGLE_CREDENTIALS: $HOME/gcloud-service-key.json
+    - name: Terraform Plan
+      run: terraform plan -out=tfplan -var="project_id=TF-GCS/gcloud-service-key.json" -var="credentials_file=TF-GCS/gcloud-service-key.json" -var="bucket_name=get_station_status1"
+      working-directory: ./TF-GCS
+      env:
+        GOOGLE_CREDENTIALS: TF-GCS/gcloud-service-key.json
 
-    # - name: Terraform Apply
-    #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    #   run: terraform apply -auto-approve tfplan
-    #   working-directory: ./TF-GCS
-    #   env:
-    #     GOOGLE_CREDENTIALS: $HOME/gcloud-service-key.json
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: terraform apply -auto-approve tfplan
+      working-directory: ./TF-GCS
+      env:
+        GOOGLE_CREDENTIALS: TF-GCS/gcloud-service-key.json
