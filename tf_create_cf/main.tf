@@ -59,11 +59,6 @@ resource "google_cloudfunctions_function_iam_member" "service_account_admin" {
   member         = "serviceAccount:${google_service_account.default.email}"
 }
 
-resource "google_service_account" "default" {
-  account_id   = "cloud-function-service-account"
-  display_name = "Cloud Function Service Account"
-}
-
 output "url" {
   value = google_cloudfunctions_function.function.https_trigger_url
 }
