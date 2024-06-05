@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # Set variables
-GITHUB_REPO="https://github.com/your-username/your-repository"
-PROJECT_ID="your-gcp-project-id"
-FUNCTION_NAME="hello_world"
+GITHUB_REPO="https://github.com/Cloud-Function-Data-Ingest/"
+PROJECT_ID="igj007"
+FUNCTION_NAME="get_station_status"
 REGION="us-central1"
 RUNTIME="python39"
-ENTRY_POINT="hello_world"
+ENTRY_POINT="get_station_status"
 TEMP_DIR="cloud_function_deploy"
-KEY_FILE_PATH="path/to/your/key-file.json"
+KEY_FILE_PATH="https://raw.githubusercontent.com/Bharatp6/Lyft-Data-Pipeline/main/igj007-a263924715a0.json"
 
 # Authenticate with Google Cloud using the service account
 gcloud auth activate-service-account --key-file=$KEY_FILE_PATH
