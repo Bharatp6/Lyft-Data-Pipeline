@@ -28,7 +28,7 @@ jobs:
         service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
 
     - name: Authenticate to Google Cloud
-      run: gcloud auth activate-service-account --key-file=${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+      run: gcloud auth activate-service-account --key-file=gcloud-service-key.json
 
     - name: Set working directory
       run: cd tf_create_cf
