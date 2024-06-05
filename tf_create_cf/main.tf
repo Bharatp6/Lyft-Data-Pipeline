@@ -16,6 +16,7 @@ resource "google_storage_bucket_object" "function_zip" {
 }
 
 resource "google_cloudfunctions2_function" "function" {
+  project     = var.project_id
   name        = "station_status"
   location    = var.region
   description = "My HTTP Cloud Function"
@@ -33,10 +34,14 @@ resource "google_cloudfunctions2_function" "function" {
 
   service_config {
     service_account_email = "cloud-function-service-account@${var.project_id}.iam.gserviceaccount.com"
-    max_instance_count  = 1
-    available_memory    = "256M"
-    timeout_seconds     = 60
+    min_instance_count    = 0
+    max_instance_count    = 1
+    available_memory      = "128Mi"
     ingress_settings      = "ALLOW_ALL"
+  }
+
+  https_trigger {
+    security_level = "SECURE_OPTIONAL"
   }
 }
 
