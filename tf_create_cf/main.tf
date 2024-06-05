@@ -15,53 +15,93 @@ resource "google_storage_bucket_object" "function_zip" {
   source = "${path.module}/get_station_status.zip"
 }
 
-resource "google_cloudfunctions_function" "function" {
+resource "google_cloud_run_service" "default" {
+  name     = "station-status"
+  location = var.region
+
+  template {
+    spec {
+      containers {
+        image = "gcr.io/${var.project_id}/station-status"
+        resources {
+          limits = {
+            memory = "128Mi"
+          }
+        }
+        env {
+          name  = "ENV"
+          value = "dev"
+        }
+      }
+      service_account_name = "cloud-function-service-account@${var.project_id}.iam.gserviceaccount.com"
+    }
+  }
+
+  traffic {
+    percent         = 100
+    latest_revision = true
+  }
+}
+
+resource "google_cloudfunctions2_function" "function" {
   name        = "station_status"
   description = "My Cloud Function"
   runtime     = "python310"
-  entry_point = "get_station_status"
-  available_memory_mb = 128
-  source_archive_bucket = google_storage_bucket.function_bucket.name
-  source_archive_object = google_storage_bucket_object.function_zip.name
-  trigger_http = true
-  service_account_email = "cloud-function-service-account@${var.project_id}.iam.gserviceaccount.com"
-  ingress_settings = "ALLOW_ALL"
-  min_instance_count = 0
-  max_instance_count = 1
-  labels = {
-    "environment" = "dev"
+  build_config {
+    runtime = "python310"
+    entry_point = "get_station_status"
+    source {
+      storage_source {
+        bucket = google_storage_bucket.function_bucket.name
+        object = google_storage_bucket_object.function_zip.name
+      }
+    }
   }
-  environment_variables = {
-    "ENV" = "dev"
+  service_config {
+    service = google_cloud_run_service.default.name
+    max_instance_count = 1
+    min_instance_count = 0
   }
-
-  provider = google-beta
 }
 
-resource "google_cloudfunctions_function_iam_member" "noauth_invoker" {
-  project        = var.project_id
-  region         = var.region
-  cloud_function = google_cloudfunctions_function.function.name
-  role           = "roles/cloudfunctions.invoker"
-  member         = "allUsers"
+resource "google_cloud_run_service_iam_binding" "noauth_invoker" {
+  location = google_cloud_run_service.default.location
+  project  = var.project_id
+  service  = google_cloud_run_service.default.name
+
+  role    = "roles/run.invoker"
+  members = ["allUsers"]
 }
 
-resource "google_cloudfunctions_function_iam_member" "service_account_invoker" {
-  project        = var.project_id
-  region         = var.region
-  cloud_function = google_cloudfunctions_function.function.name
-  role           = "roles/cloudfunctions.invoker"
-  member         = "serviceAccount:cloud-function-service-account@${var.project_id}.iam.gserviceaccount.com"
+resource "google_cloud_run_service_iam_binding" "service_account_invoker" {
+  location = google_cloud_run_service.default.location
+  project  = var.project_id
+  service  = google_cloud_run_service.default.name
+
+  role    = "roles/run.invoker"
+  members = ["serviceAccount:cloud-function-service-account@${var.project_id}.iam.gserviceaccount.com"]
 }
 
-resource "google_cloudfunctions_function_iam_member" "service_account_admin" {
-  project        = var.project_id
-  region         = var.region
-  cloud_function = google_cloudfunctions_function.function.name
-  role           = "roles/cloudfunctions.admin"
-  member         = "serviceAccount:cloud-function-service-account@${var.project_id}.iam.gserviceaccount.com"
+resource "google_cloud_run_service_iam_binding" "service_account_admin" {
+  location = google_cloud_run_service.default.location
+  project  = var.project_id
+  service  = google_cloud_run_service.default.name
+
+  role    = "roles/run.admin"
+  members = ["serviceAccount:cloud-function-service-account@${var.project_id}.iam.gserviceaccount.com"]
 }
 
 output "url" {
-  value = google_cloudfunctions_function.function.https_trigger_url
+  value = google_cloud_run_service.default.status[0].url
+}
+
+variable "project_id" {
+  description = "The project ID to deploy the resources in"
+  type        = string
+}
+
+variable "region" {
+  description = "The region to deploy the resources in"
+  type        = string
+  default     = "us-central1"
 }
