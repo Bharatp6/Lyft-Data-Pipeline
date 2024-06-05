@@ -1,5 +1,5 @@
 name: Deploy Cloud Function
- 
+
 on:
   push:
     branches:
