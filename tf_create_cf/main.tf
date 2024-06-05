@@ -1,4 +1,4 @@
-provider "google" {
+provider "google-beta" {
   project = var.project_id
   region  = var.region
 }
@@ -15,40 +15,13 @@ resource "google_storage_bucket_object" "function_zip" {
   source = "${path.module}/get_station_status.zip"
 }
 
-resource "google_cloud_run_service" "default" {
-  name     = "station-status"
-  location = var.region
-
-  template {
-    spec {
-      containers {
-        image = "gcr.io/${var.project_id}/station-status"
-        resources {
-          limits = {
-            memory = "128Mi"
-          }
-        }
-        env {
-          name  = "ENV"
-          value = "dev"
-        }
-      }
-      service_account_name = "cloud-function-service-account@${var.project_id}.iam.gserviceaccount.com"
-    }
-  }
-
-  traffic {
-    percent         = 100
-    latest_revision = true
-  }
-}
-
 resource "google_cloudfunctions2_function" "function" {
   name        = "station_status"
-  description = "My Cloud Function"
-  runtime     = "python310"
+  location    = var.region
+  description = "My HTTP Cloud Function"
+
   build_config {
-    runtime = "python310"
+    runtime     = "python310"
     entry_point = "get_station_status"
     source {
       storage_source {
@@ -57,42 +30,32 @@ resource "google_cloudfunctions2_function" "function" {
       }
     }
   }
+
   service_config {
-    service = google_cloud_run_service.default.name
-    max_instance_count = 1
-    min_instance_count = 0
+    service_account_email = "cloud-function-service-account@${var.project_id}.iam.gserviceaccount.com"
+    min_instance_count    = 0
+    max_instance_count    = 1
+    available_memory_mb   = 128
+    ingress_settings      = "ALLOW_ALL"
   }
+
+  event_trigger {
+    trigger_region = var.region
+    event_type     = "google.cloud.functions.v2.function.v1.published"
+    resource       = "projects/${var.project_id}/topics/my-topic"
+  }
+
+  trigger_http = true
 }
 
-resource "google_cloud_run_service_iam_binding" "noauth_invoker" {
-  location = google_cloud_run_service.default.location
-  project  = var.project_id
-  service  = google_cloud_run_service.default.name
-
-  role    = "roles/run.invoker"
-  members = ["allUsers"]
-}
-
-resource "google_cloud_run_service_iam_binding" "service_account_invoker" {
-  location = google_cloud_run_service.default.location
-  project  = var.project_id
-  service  = google_cloud_run_service.default.name
-
-  role    = "roles/run.invoker"
-  members = ["serviceAccount:cloud-function-service-account@${var.project_id}.iam.gserviceaccount.com"]
-}
-
-resource "google_cloud_run_service_iam_binding" "service_account_admin" {
-  location = google_cloud_run_service.default.location
-  project  = var.project_id
-  service  = google_cloud_run_service.default.name
-
-  role    = "roles/run.admin"
-  members = ["serviceAccount:cloud-function-service-account@${var.project_id}.iam.gserviceaccount.com"]
+resource "google_cloudfunctions2_function_iam_member" "noauth_invoker" {
+  project        = var.project_id
+  location       = var.region
+  cloud_function = google_cloudfunctions2_function.function.name
+  role           = "roles/cloudfunctions.invoker"
+  member         = "allUsers"
 }
 
 output "url" {
-  value = google_cloud_run_service.default.status[0].url
+  value = google_cloudfunctions2_function.function.service_config.uri
 }
-
-
