@@ -52,10 +52,15 @@ jobs:
       working-directory: tf_create_cf
       env:
         TF_LOG: DEBUG
+        TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
+        TF_VAR_region: "us-central1"  # or any region you want to use
 
     - name: Apply Terraform
       run: terraform apply -auto-approve tfplan -parallelism=10
       working-directory: tf_create_cf
+      env:
+        TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
+        TF_VAR_region: "us-central1"  # or any region you want to use
 
     - name: Upload Function Code
       run: |
