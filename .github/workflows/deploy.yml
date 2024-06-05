@@ -1,0 +1,38 @@
+name: Deploy Google Cloud Function
+
+on:
+  push:
+    branches:
+      - main  # Trigger deployment on push to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'  # Specify the Python version
+
+    - name: Install Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v0.2.1
+      with:
+        version: 'latest'
+        project_id: ${{ secrets.IGJ007_GCP_PROJ_ID }}
+        service_account_key: ${{ secrets.ICJ007_SERVICE_ACC_KEY }}
+
+    - name: Authenticate to Google Cloud
+      run: echo "${{ secrets.ICJ007_SERVICE_ACC_KEY }}" > $HOME/gcloud-service-key.json
+
+    - name: Run deployment script
+      run: |
+        chmod +x ./deploy.sh
+        ./deploy.sh
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: $HOME/gcloud-service-key.json
+        PROJECT_ID: ${{ secrets.IGJ007_GCP_PROJ_ID }}
+        KEY_FILE_PATH: $HOME/gcloud-service-key.json
