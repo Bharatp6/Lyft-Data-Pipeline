@@ -31,6 +31,9 @@ jobs:
     - name: Authenticate to Google Cloud
       run: gcloud auth activate-service-account --key-file=gcloud-service-key.json
 
+    - name: Enable Artifact Registry API
+      run: gcloud services enable artifactregistry.googleapis.com
+
     - name: Set working directory
       run: cd tf_create_cf
 
@@ -67,3 +70,4 @@ jobs:
     - name: Upload Function Code
       run: |
         gsutil cp tf_create_cf/get_station_status.zip gs://${{ secrets.GCP_PROJECT_ID }}-function-bucket/get_station_status.zip
+``
