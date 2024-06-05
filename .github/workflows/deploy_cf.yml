@@ -40,6 +40,7 @@ jobs:
         gcloud services enable iam.googleapis.com
         gcloud services enable pubsub.googleapis.com
         gcloud services enable storage.googleapis.com
+        gcloud services enable run.googleapis.com 
 
     - name: Set working directory
       run: cd tf_create_cf
