@@ -25,7 +25,8 @@ jobs:
         project_id: ${{ secrets.IGJ_GCP_PROJ_ID }}
 
     - name: Write service account key to file
-      run: echo "${{ secrets.ICJ007_SERVICE_ACC_KEY }}" > $HOME/gcloud-service-key.json
+      run: echo "${{ secrets.ICJ007_SERVICE_ACC_KEY }}" > $HOME/gcloud-service-key.json cat $HOME/gcloud-service-key.json 
+
 
     - name: Run setup script
       run: |
