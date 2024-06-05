@@ -51,6 +51,7 @@ jobs:
       run: terraform plan -out=tfplan -parallelism=10
       working-directory: tf_create_cf
       env:
+        GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcloud-service-key.json
         TF_LOG: DEBUG
         TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
         TF_VAR_region: "us-central1"  # or any region you want to use
@@ -59,6 +60,7 @@ jobs:
       run: terraform apply -auto-approve tfplan -parallelism=10
       working-directory: tf_create_cf
       env:
+        GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcloud-service-key.json
         TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
         TF_VAR_region: "us-central1"  # or any region you want to use
 
