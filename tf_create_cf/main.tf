@@ -25,6 +25,7 @@ resource "google_cloudfunctions_function" "function" {
   source_archive_object = google_storage_bucket_object.function_zip.name
   trigger_http          = true
   entry_point           = "get_station_status"
+  service_account_email = "cloud-function-service-account@${var.project_id}.iam.gserviceaccount.com"
 
   environment_variables = {
     "ENV" = "dev"
@@ -48,7 +49,7 @@ resource "google_cloudfunctions_function_iam_member" "service_account_invoker" {
   region         = var.region
   cloud_function = google_cloudfunctions_function.function.name
   role           = "roles/cloudfunctions.invoker"
-  member         = "serviceAccount:${google_service_account.default.email}"
+  member         = "serviceAccount:cloud-function-service-account@${var.project_id}.iam.gserviceaccount.com"
 }
 
 resource "google_cloudfunctions_function_iam_member" "service_account_admin" {
@@ -56,10 +57,9 @@ resource "google_cloudfunctions_function_iam_member" "service_account_admin" {
   region         = var.region
   cloud_function = google_cloudfunctions_function.function.name
   role           = "roles/cloudfunctions.admin"
-  member         = "serviceAccount:${google_service_account.default.email}"
+  member         = "serviceAccount:cloud-function-service-account@${var.project_id}.iam.gserviceaccount.com"
 }
 
 output "url" {
   value = google_cloudfunctions_function.function.https_trigger_url
 }
-
