@@ -24,15 +24,16 @@ jobs:
         version: 'latest'
         project_id: ${{ secrets.IGJ_GCP_PROJ_ID }}
 
-    - name: Write service account key to file
-      run: echo "${{ secrets.ICJ007_SERVICE_ACC_KEY }}" > $HOME/gcloud-service-key.json cat $HOME/gcloud-service-key.json 
-
+    - name: Set up environment variables
+      run: echo "${{ secrets.ICJ007_SERVICE_ACC_KEY }}" > $HOME/gcloud-service-key.json
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.ICJ007_SERVICE_ACC_KEY }}
 
     - name: Run setup script
       run: |
         cd "Cloud function creation"
         chmod +x ./gcp_permissions.sh
-        ./gcp_permissions.sh "${{ secrets.IGJ_GCP_PROJ_ID }}" "resource-creation@${{ secrets.IGJ_GCP_PROJ_ID }}.iam.gserviceaccount.com" $HOME/gcloud-service-key.json
+        ./gcp_permissions.sh "${{ secrets.IGJ_GCP_PROJ_ID }}" "resource-creation@${{ secrets.IGJ_GCP_PROJ_ID }}.iam.gserviceaccount.com" "$GOOGLE_APPLICATION_CREDENTIALS_JSON"
 
     - name: Run deployment script
       run: |
@@ -40,6 +41,5 @@ jobs:
         chmod +x ./deploy.sh
         ./deploy.sh
       env:
-        GOOGLE_APPLICATION_CREDENTIALS: $HOME/gcloud-service-key.json
+        GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.ICJ007_SERVICE_ACC_KEY }}
         PROJECT_ID: ${{ secrets.IGJ_GCP_PROJ_ID }}
-        KEY_FILE_PATH: $HOME/gcloud-service-key.json
