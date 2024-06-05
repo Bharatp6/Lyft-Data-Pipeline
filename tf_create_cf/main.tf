@@ -4,6 +4,7 @@ provider "google-beta" {
 }
 
 resource "google_storage_bucket" "function_bucket" {
+  project     = var.project_id
   name          = "${var.project_id}-function-bucket"
   location      = var.region
   force_destroy = false  # Set to false to prevent bucket deletion
