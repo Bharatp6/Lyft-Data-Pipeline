@@ -1,5 +1,4 @@
 name: Terraform GCS Bucket
-
 on:
   push:
     branches:
@@ -11,10 +10,15 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+
+    - name: Convert Secrets to JSON
+      id: convert_secrets
+      run: |
+        secrets='{"GCP_SERVICE_ACCOUNT_KEY": "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}", "GCP_PROJECT_ID": "${{ secrets.GCP_PROJECT_ID }}"}'
+        echo "::set-output name=secrets::$(echo $secrets | jq -c .)"
 
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v1
@@ -22,19 +26,19 @@ jobs:
         terraform_version: 1.0.0
 
     - name: Write GCP Credentials to File
-      run: echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" > $HOME/gcloud-service-key.json
+      run: echo "${{ fromJson(steps.convert_secrets.outputs.secrets).GCP_SERVICE_ACCOUNT_KEY }}" > $HOME/gcloud-service-key.json
 
     - name: Print environment variables
       run: |
-        echo "PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}"
+        echo "PROJECT_ID: ${{ fromJson(steps.convert_secrets.outputs.secrets).GCP_PROJECT_ID }}"
         echo "Credentials File Path: $HOME/gcloud-service-key.json"
 
     - name: Configure GCP Credentials
       uses: google-github-actions/setup-gcloud@v0.2.0
       with:
         version: 'latest'
-        project_id: ${{ secrets.GCP_PROJECT_ID }}
-        service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+        project_id: ${{ fromJson(steps.convert_secrets.outputs.secrets).GCP_PROJECT_ID }}
+        service_account_key: ${{ fromJson(steps.convert_secrets.outputs.secrets).GCP_SERVICE_ACCOUNT_KEY }}
 
     - name: Terraform Init
       run: terraform init
@@ -43,7 +47,7 @@ jobs:
         GOOGLE_CREDENTIALS: $HOME/gcloud-service-key.json
 
     - name: Terraform Plan
-      run: terraform plan -out=tfplan -var="project_id=${{ secrets.GCP_PROJECT_ID }}" -var="credentials_file=$HOME/gcloud-service-key.json" -var="bucket_name=get_station_status"
+      run: terraform plan -out=tfplan -var="project_id=${{ fromJson(steps.convert_secrets.outputs.secrets).GCP_PROJECT_ID }}" -var="credentials_file=$HOME/gcloud-service-key.json" -var="bucket_name=get_station_status"
       working-directory: ./TF-GCS
       env:
         GOOGLE_CREDENTIALS: $HOME/gcloud-service-key.json
