@@ -19,21 +19,23 @@ resource "google_cloudfunctions_function" "function" {
   name        = "station_status"
   description = "My Cloud Function"
   runtime     = "python310"
-
-  available_memory_mb   = 128
+  entry_point = "get_station_status"
+  available_memory_mb = 128
   source_archive_bucket = google_storage_bucket.function_bucket.name
   source_archive_object = google_storage_bucket_object.function_zip.name
-  trigger_http          = true
-  entry_point           = "get_station_status"
+  trigger_http = true
   service_account_email = "cloud-function-service-account@${var.project_id}.iam.gserviceaccount.com"
-
+  ingress_settings = "ALLOW_ALL"
+  min_instance_count = 0
+  max_instance_count = 1
+  labels = {
+    "environment" = "dev"
+  }
   environment_variables = {
     "ENV" = "dev"
   }
 
-  labels = {
-    "environment" = "dev"
-  }
+  provider = google-beta
 }
 
 resource "google_cloudfunctions_function_iam_member" "noauth_invoker" {
