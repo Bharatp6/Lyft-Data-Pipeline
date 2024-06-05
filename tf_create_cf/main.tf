@@ -49,5 +49,5 @@ resource "google_cloudfunctions2_function_iam_member" "noauth_invoker" {
 }
 
 output "url" {
-  value = google_cloudfunctions2_function.function.service_config.uri
+  value = google_cloudfunctions2_function.function.service_config[0].uri
 }
