@@ -28,9 +28,14 @@ jobs:
     - name: Authenticate to Google Cloud
       run: echo "${{ secrets.ICJ007_SERVICE_ACC_KEY }}" > $HOME/gcloud-service-key.json
 
+    - name: Run setup script
+      run: |
+        chmod +x ./Cloud\ function\ creation/setup_gcloud.sh
+        ./Cloud\ function\ creation/gcp_permissions.sh ${{ secrets.IGJ007_GCP_PROJ_ID }} resource-creation@${{ secrets.IGJ007_GCP_PROJ_ID }}.iam.gserviceaccount.com $HOME/gcloud-service-key.json
+
     - name: Run deployment script
       run: |
-        cd "Cloud function creation"
+        cd Cloud\ function\ creation
         chmod +x ./deploy.sh
         ./deploy.sh
       env:
