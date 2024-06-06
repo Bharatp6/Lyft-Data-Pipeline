@@ -77,4 +77,7 @@ jobs:
 
     - name: Upload Function Code
       run: |
-        gsutil cp tf_create_cf/get_station_status.zip gs://${{ secrets.GCP_PROJECT_ID }}-function-bucket/get_station_status.zip
+        gsutil cp tf_create_cf/get_station_status.zip gs://${{ secrets.GCP_PROJECT_ID }}-function-bucket/station_status.zip
+
+    - name: Set GOOGLE_FUNCTION_SOURCE
+      run: echo "GOOGLE_FUNCTION_SOURCE=gs://${{ secrets.GCP_PROJECT_ID }}-function-bucket/station_status.zip" >> $GITHUB_ENV
