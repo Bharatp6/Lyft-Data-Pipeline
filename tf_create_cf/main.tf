@@ -13,7 +13,7 @@ resource "google_storage_bucket" "function_bucket" {
 resource "google_storage_bucket_object" "function_zip" {
   name   = "station_status.zip"
   bucket = google_storage_bucket.function_bucket.name
-  source = "${path.module}/get_station_status.zip"
+  source = "${path.module}/function.zip"
 }
 
 resource "google_cloudfunctions2_function" "function" {
