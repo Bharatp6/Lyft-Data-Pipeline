@@ -8,6 +8,3 @@ resource "google_pubsub_topic" "station-status" {
   message_retention_duration = "86600s"
 }
 
-output "pubsub_topic_name" {
-  value = google_pubsub_topic.my_topic.name
-}
