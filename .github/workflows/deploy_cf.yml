@@ -73,9 +73,5 @@ jobs:
       env:
         GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcloud-service-key.json
         TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
-        TF_VAR_region: "us-central1"  # or any region you want to use
-
-    - name: Upload Function Code
-      run: |
-        gsutil cp tf_create_cf/get_station_status.zip gs://${{ secrets.GCP_PROJECT_ID }}-function-bucket/station_status.zip
+        TF_VAR_region: "us-central1"  
 
