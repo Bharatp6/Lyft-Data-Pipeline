@@ -4,7 +4,8 @@ provider "google-beta" {
 }
 
 resource "google_pubsub_topic" "my_topic" {
-  name = "my-topic"
+  name = "station-status"
+  message_retention_duration = "86600s"
 }
 
 output "pubsub_topic_name" {
