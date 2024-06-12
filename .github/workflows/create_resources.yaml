@@ -51,25 +51,22 @@ jobs:
         gcloud services enable cloudtrace.googleapis.com
         gcloud services enable stackdriver.googleapis.com
 
-    - name: Set working directory
-      run: cd create_resources
-
     - name: Install Terraform
       uses: hashicorp/setup-terraform@v1
       with:
-        working-directory: .
+        working-directory: create_resources
 
     - name: Initialize Terraform
       run: terraform init
-      working-directory: .
+      working-directory: create_resources
 
     - name: Validate Terraform
       run: terraform validate
-      working-directory: .
+      working-directory: create_resources
 
     - name: Plan Terraform
       run: terraform plan -out=tfplan -parallelism=10
-      working-directory: .
+      working-directory: create_resources
       env:
         GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcloud-service-key.json
         TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
@@ -78,7 +75,7 @@ jobs:
 
     - name: Apply Terraform
       run: terraform apply -auto-approve tfplan
-      working-directory: .
+      working-directory: create_resources
       env:
         GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcloud-service-key.json
         TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
