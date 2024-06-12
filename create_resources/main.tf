@@ -37,7 +37,7 @@ resource "google_cloudfunctions2_function" "function" {
   }
 
   service_config {
-    service_account_email = var.service_account_email #"cloud-function-service-account@${var.project_id}.iam.gserviceaccount.com"
+    service_account_email = var.service_account_email # "cloud-function-service-account@${var.project_id}.iam.gserviceaccount.com"
     min_instance_count    = 0
     max_instance_count    = 1
     available_memory      = "128Mi"
