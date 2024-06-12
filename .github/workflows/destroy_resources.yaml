@@ -1,0 +1,60 @@
+name: Destroy Infrastructure
+
+on:
+  push:
+    tags:
+      - 'dr'
+  workflow_dispatch:
+
+jobs:
+  destroy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Create JSON credentials file
+      id: create-json-credentials
+      uses: jsdaniell/create-json@v1.2.3
+      with:
+        name: "gcloud-service-key.json"
+        json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        version: 'latest'
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
+    - name: Authenticate to Google Cloud
+      run: gcloud auth activate-service-account --key-file=gcloud-service-key.json
+
+
+    - name: Install Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        working-directory: create_resources
+
+    - name: Initialize Terraform
+      run: terraform init
+      working-directory: create_resources
+
+    - name: Plan Destroy
+      run: terraform plan -destroy -out=tfplan
+      working-directory: create_resources
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcloud-service-key.json
+        TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
+        TF_VAR_region: "us-central1"
+        TF_VAR_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
+
+    - name: Apply Destroy
+      run: terraform apply -auto-approve tfplan
+      working-directory: create_resources
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcloud-service-key.json
+        TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
+        TF_VAR_region: "us-central1"
+        TF_VAR_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
