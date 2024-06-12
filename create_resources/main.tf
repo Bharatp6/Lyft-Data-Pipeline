@@ -1,4 +1,4 @@
-provider "google-beta" {
+provider "google" {
   project = var.project_id
   region  = var.region
 }
@@ -52,7 +52,6 @@ output "url" {
 
 # Create a Pub/Sub topic
 resource "google_pubsub_topic" "station_status" {
-  project = var.project_id
   name = "station-status"
   message_retention_duration = "86600s"
 }
