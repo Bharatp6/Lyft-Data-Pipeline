@@ -52,7 +52,7 @@ jobs:
         gcloud services enable stackdriver.googleapis.com
 
     - name: Set working directory
-      run: cd terraform
+      run: cd create_resources
 
     - name: Install Terraform
       uses: hashicorp/setup-terraform@v1
