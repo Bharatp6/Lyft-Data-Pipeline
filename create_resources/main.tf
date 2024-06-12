@@ -71,25 +71,34 @@ resource "google_storage_bucket_object" "function_zip1" {
   source = "${path.module}/pull_station_stat.zip"
 }
 
-# Create a Cloud Function for pulling the station status
-resource "google_cloudfunctions_function" "function" {
+# Create the cloud function for pulling the station status 
+resource "google_cloud_functions2_function" "function1" {
   name        = "pull_station_status"
   runtime     = "python310"  # Adjust the runtime according to your code
   entry_point = "pull_station_status"
+  region      = var.region
+  project     = var.project_id
+
   source_archive_bucket = google_storage_bucket.function_bucket_pull.name
   source_archive_object = google_storage_bucket_object.function_zip1.name
-  trigger_http = false
 
   event_trigger {
     event_type = "google.pubsub.topic.publish"
     resource   = google_pubsub_topic.station_status.id
   }
 
-  available_memory_mb = 256  # Set the memory in MB (e.g., 128, 256, 512, 1024, 2048, etc.)
-  min_instances       = 0    # Set the minimum number of instances
-  max_instances       = 2    # Set the maximum number of instances
+  build_config {
+    runtime = "python310"
+  }
+
+  service_config {
+    available_memory = "256M"  # Set the memory (e.g., 128M, 256M, 512M, 1G, etc.)
+    min_instance_count = 0    # Set the minimum number of instances
+    max_instance_count = 2    # Set the maximum number of instances
+  }
 
   environment_variables = {
     PUBSUB_TOPIC = google_pubsub_topic.station_status.name
   }
 }
+
