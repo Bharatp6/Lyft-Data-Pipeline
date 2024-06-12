@@ -3,7 +3,7 @@ name: Deploy Cloud Function and Set IAM Roles
 on:
   push:
     branches:
-      - main
+      - resource
   workflow_dispatch:
 
 jobs:
