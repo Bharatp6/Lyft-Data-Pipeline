@@ -1,6 +1,9 @@
 name: Destroy Infrastructure
 
 on:
+  push:
+    tags:
+      - 'dr' 
   workflow_dispatch:
 
 jobs:
