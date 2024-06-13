@@ -87,6 +87,9 @@ resource "google_cloudfunctions2_function" "function1" {
         object = google_storage_bucket_object.function_zip1.name
       }
     }
+    environment_variables = {
+      PUBSUB_TOPIC = google_pubsub_topic.station_status.name
+    }
   }
 
   service_config {
@@ -97,11 +100,9 @@ resource "google_cloudfunctions2_function" "function1" {
   }
 
   event_trigger {
-    trigger {
-      pubsub_topic {
-        topic = google_pubsub_topic.station_status.name
-      }
-    }
+    trigger_region = var.region
+    event_type     = "google.cloud.pubsub.topic.v1.messagePublished"
+    pubsub_topic   = google_pubsub_topic.station_status.id
   }
 }
 
