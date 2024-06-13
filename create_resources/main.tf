@@ -102,3 +102,33 @@ resource "google_cloud_functions2_function" "function1" {
   }
 }
 
+# Create the BigQuery dataset
+resource "google_bigquery_dataset" "dataset" {
+  dataset_id = var.dataset_id
+  project    = var.project_id
+  location   = var.region
+}
+
+# Create the STATION_STATUS_NRT BigQuery table
+resource "google_bigquery_table" "station_status_nrt_table" {
+  dataset_id = google_bigquery_dataset.dataset.dataset_id
+  table_id   = "STATION_STATUS_NRT"
+  project    = var.project_id
+  schema     = jsonencode(var.station_status_nrt_schema)
+}
+
+# Create the STATION_INFO BigQuery table
+resource "google_bigquery_table" "station_info_table" {
+  dataset_id = google_bigquery_dataset.dataset.dataset_id
+  table_id   = "STATION_INFO"
+  project    = var.project_id
+  schema     = jsonencode(var.station_info_schema)
+}
+
+# Create the WEATHER_TABLE BigQuery table
+resource "google_bigquery_table" "weather_table" {
+  dataset_id = google_bigquery_dataset.dataset.dataset_id
+  table_id   = "WEATHER_TABLE"
+  project    = var.project_id
+  schema     = jsonencode(var.weather_table_schema)
+}
