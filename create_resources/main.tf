@@ -40,7 +40,7 @@ resource "google_cloudfunctions2_function" "function" {
     service_account_email = var.service_account_email # "cloud-function-service-account@${var.project_id}.iam.gserviceaccount.com"
     min_instance_count    = 0
     max_instance_count    = 2
-    available_memory      = "128Mi"
+    available_memory      = "256Mi"
     ingress_settings      = "ALLOW_ALL"
   }
 }
@@ -70,37 +70,42 @@ resource "google_storage_bucket_object" "function_zip1" {
   bucket = google_storage_bucket.function_bucket_pull.name
   source = "${path.module}/pull_station_stat.zip"
 }
-
-# Create the cloud function for pulling the station status 
+ 
+# Create the Cloud Function for pulling the station status
 resource "google_cloudfunctions2_function" "function1" {
-  name        = "pull_station_status"
-  runtime     = "python310"  # Adjust the runtime according to your code
-  entry_point = "pull_station_status"
-  region      = var.region
   project     = var.project_id
+  name        = "pull_station_status"
+  location    = var.region
+  description = "Function to pull station status"
 
-  source_archive_bucket = google_storage_bucket.function_bucket_pull.name
-  source_archive_object = google_storage_bucket_object.function_zip1.name
+  build_config {
+    runtime     = "python310"
+    entry_point = "pull_station_status"
+    source {
+      storage_source {
+        bucket = google_storage_bucket.function_bucket_pull.name
+        object = google_storage_bucket_object.function_zip1.name
+      }
+    }
+  }
+
+  service_config {
+    service_account_email = var.service_account_email  # "cloud-function-service-account@${var.project_id}.iam.gserviceaccount.com"
+    available_memory      = "256M"  # Set the memory (e.g., 128M, 256M, 512M, 1G, etc.)
+    min_instance_count    = 0       # Set the minimum number of instances
+    max_instance_count    = 2       # Set the maximum number of instances
+  }
 
   event_trigger {
     event_type = "google.pubsub.topic.publish"
     resource   = google_pubsub_topic.station_status.id
   }
 
-  build_config {
-    runtime = "python310"
-  }
-
-  service_config {
-    available_memory = "256M"  # Set the memory (e.g., 128M, 256M, 512M, 1G, etc.)
-    min_instance_count = 0    # Set the minimum number of instances
-    max_instance_count = 2    # Set the maximum number of instances
-  }
-
   environment_variables = {
     PUBSUB_TOPIC = google_pubsub_topic.station_status.name
   }
 }
+
 
 # Create the BigQuery dataset
 resource "google_bigquery_dataset" "dataset" {
