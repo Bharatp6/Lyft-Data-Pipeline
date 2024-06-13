@@ -97,12 +97,11 @@ resource "google_cloudfunctions2_function" "function1" {
   }
 
   event_trigger {
-    event_type = "google.pubsub.topic.publish"
-    resource   = google_pubsub_topic.station_status.id
-  }
-
-  environment_variables = {
-    PUBSUB_TOPIC = google_pubsub_topic.station_status.name
+    trigger {
+      pubsub_topic {
+        topic = google_pubsub_topic.station_status.name
+      }
+    }
   }
 }
 
