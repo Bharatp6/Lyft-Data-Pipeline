@@ -72,7 +72,7 @@ resource "google_storage_bucket_object" "function_zip1" {
 }
 
 # Create the cloud function for pulling the station status 
-resource "google_cloud_functions2_function" "function1" {
+resource "google_cloudfunctions2_function" "function1" {
   name        = "pull_station_status"
   runtime     = "python310"  # Adjust the runtime according to your code
   entry_point = "pull_station_status"
