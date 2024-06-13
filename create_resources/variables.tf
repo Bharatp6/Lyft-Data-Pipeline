@@ -13,6 +13,12 @@ variable "service_account_email" {
   type        = string
 }
 
+variable "dataset_id" {
+  description = "The ID of the dataset to create."
+  type        = string
+  default     = "my_dataset"
+}
+
 variable "station_status_nrt_schema" {
   description = "Schema for STATION_STATUS_NRT table"
   type = list(object({
