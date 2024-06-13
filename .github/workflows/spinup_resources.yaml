@@ -50,6 +50,9 @@ jobs:
         gcloud services enable monitoring.googleapis.com
         gcloud services enable cloudtrace.googleapis.com
         gcloud services enable stackdriver.googleapis.com
+        gcloud services enable eventarc.googleapis.com
+  
+
 
     - name: Install Terraform
       uses: hashicorp/setup-terraform@v1
