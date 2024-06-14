@@ -68,7 +68,7 @@ resource "google_storage_bucket" "function_bucket_pull" {
 resource "google_storage_bucket_object" "function_zip1" {
   name   = "pull_station_stat.zip"
   bucket = google_storage_bucket.function_bucket_pull.name
-  source = "${path.module}/pull_station_status_zip/pull_station_stat.zip"
+  source = "${path.module}/pull_station_status_zip/function.zip"
 }
  
 # Create the Cloud Function for pulling the station status
