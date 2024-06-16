@@ -92,5 +92,5 @@ jobs:
         pip install google-cloud-storage
 
     - name: Run the script
-      run: python create_delta_table.py
+      run: python create_delta_tables.py
       working-directory: create_resources/delta_table_script
