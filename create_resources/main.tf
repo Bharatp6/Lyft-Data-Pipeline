@@ -116,19 +116,19 @@ resource "google_storage_bucket" "my_bucket" {
 resource "google_storage_bucket_object" "weather_delta_table" {
   name   = "weather_delta_table/"  # The trailing slash indicates it's a folder
   bucket = google_storage_bucket.my_bucket.name
-  # content = ""  # This creates an empty object to represent the folder
+  content       = "Not really a directory, but it's empty." # content = ""  # This creates an empty object to represent the folder
 }
 
 resource "google_storage_bucket_object" "station_status_nrt_delta_table" {
   name   = "station_status_nrt_delta_table/"  # The trailing slash indicates it's a folder
   bucket = google_storage_bucket.my_bucket.name
-  # content = ""  # This creates an empty object to represent the folder
+  content       = "Not really a directory, but it's empty." # content = ""  # This creates an empty object to represent the folder
 }
 
 resource "google_storage_bucket_object" "station_info_delta_table" {
   name   = "station_info_delta_table/"  # The trailing slash indicates it's a folder
   bucket = google_storage_bucket.my_bucket.name
-  # content = ""  # This creates an empty object to represent the folder
+  content       = "Not really a directory, but it's empty." # content = ""  # This creates an empty object to represent the folder
 }
 
 
