@@ -106,6 +106,31 @@ resource "google_cloudfunctions2_function" "function1" {
   }
 }
 
+# Create a GCS bucket for delta table
+resource "google_storage_bucket" "my_bucket" {
+  name     = "delta_table_bucket"  # Replace with a unique bucket name
+  location = var.region
+}
+
+# Create folders in the GCS bucket by uploading empty objects
+resource "google_storage_bucket_object" "weather_delta_table" {
+  name   = "weather_delta_table/"  # The trailing slash indicates it's a folder
+  bucket = google_storage_bucket.my_bucket.name
+  content = ""  # This creates an empty object to represent the folder
+}
+
+resource "google_storage_bucket_object" "station_status_nrt_delta_table" {
+  name   = "station_status_nrt_delta_table/"  # The trailing slash indicates it's a folder
+  bucket = google_storage_bucket.my_bucket.name
+  content = ""  # This creates an empty object to represent the folder
+}
+
+resource "google_storage_bucket_object" "station_info_delta_table" {
+  name   = "station_info_delta_table/"  # The trailing slash indicates it's a folder
+  bucket = google_storage_bucket.my_bucket.name
+  content = ""  # This creates an empty object to represent the folder
+}
+
 
 # Create the BigQuery dataset
 resource "google_bigquery_dataset" "dataset" {
