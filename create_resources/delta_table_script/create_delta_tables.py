@@ -1,7 +1,7 @@
 from pyspark.sql.types import StructType, StructField, StringType,FloatType,IntegerType, BooleanType ,TimestampType
 import pyspark
 from delta import *
-import gustil
+import gsutil
 gustil.authenticate_with_service_account(os.getenv('GCP_SERVICE_ACCOUNT_KEY'))
 
 
