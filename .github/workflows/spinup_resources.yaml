@@ -90,7 +90,8 @@ jobs:
         pip install pyspark==3.5.1
         pip install delta-spark==3.2.0
         pip install google-cloud-storage
-        pip install gustil
+        pip install gsutil
+      working-directory: create_resources/delta_table_script
 
     - name: Run the script
       env:
