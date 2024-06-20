@@ -60,7 +60,9 @@ jobs:
         working-directory: create_resources
 
     - name: Initialize Terraform
-      run: terraform init
+      run: |
+            gcloud auth application-default login
+            terraform init
       working-directory: create_resources
 
     - name: Validate Terraform
