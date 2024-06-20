@@ -3,12 +3,6 @@ provider "google" {
   region  = var.region
 }
 
-# Create a GCS bucket for delta table
-resource "google_storage_bucket" "tf_files" {
-  name     = "terraform_files_"  # Replace with a unique bucket name
-  location = var.region
-}
-
 # Create a Cloud Storage bucket for function code
 resource "google_storage_bucket" "function_bucket" {
   project       = var.project_id
