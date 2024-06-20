@@ -54,36 +54,36 @@ jobs:
   
 
 
-    # - name: Install Terraform
-    #   uses: hashicorp/setup-terraform@v1
-    #   with:
-    #     working-directory: create_resources
+    - name: Install Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        working-directory: create_resources
 
-    # - name: Initialize Terraform
-    #   run: terraform init
-    #   working-directory: create_resources
+    - name: Initialize Terraform
+      run: terraform init
+      working-directory: create_resources
 
-    # - name: Validate Terraform
-    #   run: terraform validate
-    #   working-directory: create_resources
+    - name: Validate Terraform
+      run: terraform validate
+      working-directory: create_resources
 
-    # - name: Plan Terraform
-    #   run: terraform plan -out=tfplan -parallelism=10
-    #   working-directory: create_resources
-    #   env:
-    #     GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcloud-service-key.json
-    #     TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
-    #     TF_VAR_region: "us-central1"
-    #     TF_VAR_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
+    - name: Plan Terraform
+      run: terraform plan -out=tfplan -parallelism=10
+      working-directory: create_resources
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcloud-service-key.json
+        TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
+        TF_VAR_region: "us-central1"
+        TF_VAR_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
 
-    # - name: Apply Terraform
-    #   run: terraform apply -auto-approve tfplan
-    #   working-directory: create_resources
-    #   env:
-    #     GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcloud-service-key.json
-    #     TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
-    #     TF_VAR_region: "us-central1"
-    #     TF_VAR_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
+    - name: Apply Terraform
+      run: terraform apply -auto-approve tfplan
+      working-directory: create_resources
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcloud-service-key.json
+        TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
+        TF_VAR_region: "us-central1"
+        TF_VAR_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
         
     # - name: Install dependencies
     #  run: |
@@ -95,22 +95,22 @@ jobs:
         #pip install gsutil
       # working-directory: create_resources/delta_table_script
 
-    - name: Run the script
-      env:
-        GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-      run: |
-          pip install pyspark==3.5.1
-          pip install delta-spark==3.2.0
-          pip install gsutil
+    # - name: Run the script
+    #   env:
+    #     GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+    #   run: |
+    #       pip install pyspark==3.5.1
+    #       pip install delta-spark==3.2.0
+    #       pip install gsutil
           
-    - name: Add gsutil to PATH
-      run: |
-         echo "$(python -m site --user-base)/bin" >> $GITHUB_PATH
+    # - name: Add gsutil to PATH
+    #   run: |
+    #      echo "$(python -m site --user-base)/bin" >> $GITHUB_PATH
 
-    - name: Verify gsutil
-      run: gsutil version
+    # - name: Verify gsutil
+    #   run: gsutil version
 
-    - name: run the python script
-      run: |
-         python create_delta_tables.py
-      working-directory: create_resources/delta_table_script
+    # - name: run the python script
+    #   run: |
+    #      python create_delta_tables.py
+    #   working-directory: create_resources/delta_table_script
