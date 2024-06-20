@@ -102,5 +102,15 @@ jobs:
           pip install pyspark==3.5.1
           pip install delta-spark==3.2.0
           pip install gsutil
-          python create_delta_tables.py
+          
+    - name: Add gsutil to PATH
+      run: |
+         echo "$(python -m site --user-base)/bin" >> $GITHUB_PATH
+
+    - name: Verify gsutil
+      run: gsutil version
+
+    - name: run the python script
+      run: |
+         python create_delta_tables.py
       # working-directory: create_resources/delta_table_script
