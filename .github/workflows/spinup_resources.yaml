@@ -29,7 +29,12 @@ jobs:
         service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
 
     - name: Authenticate to Google Cloud
-      run: gcloud auth activate-service-account --key-file=gcloud-service-key.json
+      run: | 
+           gcloud auth activate-service-account --key-file=gcloud-service-key.json
+           gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
+           gsutil mb -p ${{ secrets.GCP_PROJECT_ID }} -l  gs://terraform_state/key/terraform.tfstate
+
+
 
     # - name: Enable APIs
     #   run: |
