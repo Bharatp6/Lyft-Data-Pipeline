@@ -114,6 +114,14 @@ resource "google_storage_bucket" "my_bucket" {
 
 # Create folders in the GCS bucket by uploading empty objects
 resource "google_storage_bucket_object" "weather_delta_table" {
+  name   = "delta_table_script/"  # The trailing slash indicates it's a folder
+  bucket = google_storage_bucket.my_bucket.name
+  source = "${path.module}/delta_table_script/create_delta_tables.py"
+  # content       = "Not really a directory, but it's empty." # content = ""  # This creates an empty object to represent the folder
+}
+
+# Create folders in the GCS bucket by uploading empty objects
+resource "google_storage_bucket_object" "weather_delta_table" {
   name   = "weather_delta_table/"  # The trailing slash indicates it's a folder
   bucket = google_storage_bucket.my_bucket.name
   content       = "Not really a directory, but it's empty." # content = ""  # This creates an empty object to represent the folder
