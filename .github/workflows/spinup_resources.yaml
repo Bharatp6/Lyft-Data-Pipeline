@@ -60,6 +60,8 @@ jobs:
         working-directory: create_resources
 
     - name: Initialize Terraform
+      env:
+          GOOGLE_CLOUD_KEYFILE_JSON: ${{ secrets.GCP_CREDENTIALS }}
       run: terraform init
       working-directory: create_resources
 
