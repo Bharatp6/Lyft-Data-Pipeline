@@ -113,4 +113,4 @@ jobs:
     - name: run the python script
       run: |
          python create_delta_tables.py
-      # working-directory: create_resources/delta_table_script
+      working-directory: create_resources/delta_table_script
