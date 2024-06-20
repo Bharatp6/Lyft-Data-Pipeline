@@ -32,7 +32,8 @@ jobs:
       run: | 
            gcloud auth activate-service-account --key-file=gcloud-service-key.json
            gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
-           gsutil mb -p ${{ secrets.GCP_PROJECT_ID }} -l  gs://terraform_state/
+           gsutil mb -p my-gcp-project -l us-central1 gs://my-terraform-bucket/
+
 
 
 
