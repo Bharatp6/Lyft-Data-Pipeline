@@ -12,7 +12,6 @@ resource "google_storage_bucket" "tf_files" {
 terraform {
   backend "gcs" {
     bucket  = "terraform_files_"
-    key= "key/terraform.tfstate"
     prefix  = "terraform_state"
   }
 }
