@@ -11,7 +11,7 @@ resource "google_storage_bucket" "tf_files" {
 
 terraform {
   backend "gcs" {
-    credentials = gcloud-service-key.json
+    credentials = var.google_cloud_keyfile_json
     bucket  = "terraform_files_"
     prefix  = "terraform_state"
   }
