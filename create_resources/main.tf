@@ -9,14 +9,6 @@ resource "google_storage_bucket" "tf_files" {
   location = var.region
 }
 
-terraform {
-  backend "gcs" {
-    credentials = var.google_cloud_keyfile_json
-    bucket  = "terraform_files_"
-    prefix  = "terraform_state"
-  }
-}
-
 # Create a Cloud Storage bucket for function code
 resource "google_storage_bucket" "function_bucket" {
   project       = var.project_id
