@@ -31,8 +31,8 @@ jobs:
     - name: Authenticate to Google Cloud
       run: | 
            gcloud auth activate-service-account --key-file=gcloud-service-key.json
-           gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
-           gsutil mb -p ${{ secrets.GCP_PROJECT_ID }} -l us-central1 gs://terraform_state_st/
+           # gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
+           # gsutil mb -p ${{ secrets.GCP_PROJECT_ID }} -l us-central1 gs://terraform_state_st/
 
 
 
@@ -67,7 +67,7 @@ jobs:
 
     - name: Initialize Terraform
       run: | 
-           terraform init
+           terraform init -input=false -backend-config="bucket=terraform_state_st" -backend-config="credentials=${var.google_cloud_keyfile_json}"
       env:
          TF_VAR_google_cloud_keyfile_json : ${{ github.workspace }}/gcloud-service-key.json
       working-directory: create_resources
