@@ -60,8 +60,6 @@ jobs:
         working-directory: create_resources
 
     - name: Initialize Terraform
-      env:
-          TF_VAR_google_cloud_keyfile_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
       run: terraform init
       working-directory: create_resources
 
