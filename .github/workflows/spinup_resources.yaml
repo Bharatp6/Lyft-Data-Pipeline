@@ -60,9 +60,10 @@ jobs:
         working-directory: create_resources
 
     - name: Initialize Terraform
-      run: |
-            gcloud auth application-default login
-            terraform init
+      run: | 
+           terraform init
+      env:
+         TF_VAR_google_cloud_keyfile_json : ${{ github.workspace }}/gcloud-service-key.json
       working-directory: create_resources
 
     - name: Validate Terraform
