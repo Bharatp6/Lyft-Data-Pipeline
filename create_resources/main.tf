@@ -3,6 +3,19 @@ provider "google" {
   region  = var.region
 }
 
+# Create a GCS bucket for delta table
+resource "google_storage_bucket" "tf_files" {
+  name     = "terraform_files_"  # Replace with a unique bucket name
+  location = var.region
+}
+
+terraform {
+  backend "gcs" {
+    bucket  = "terraform_files_"
+    prefix  = "terraform_state"
+  }
+}
+
 # Create a Cloud Storage bucket for function code
 resource "google_storage_bucket" "function_bucket" {
   project       = var.project_id
@@ -111,14 +124,6 @@ resource "google_storage_bucket" "my_bucket" {
   name     = "delta_table_bucket"  # Replace with a unique bucket name
   location = var.region
 }
-
-# Create folders in the GCS bucket by uploading empty objects
-# resource "google_storage_bucket_object" "weather_delta_table" {
-#  name   = "delta_table_script/"  # The trailing slash indicates it's a folder
-#  bucket = google_storage_bucket.my_bucket.name
-#  source = "${path.module}/delta_table_script/create_delta_tables.py"
-  # content       = "Not really a directory, but it's empty." # content = ""  # This creates an empty object to represent the folder
-# }
 
 # Create folders in the GCS bucket by uploading empty objects
 resource "google_storage_bucket_object" "weather_delta_table" {
