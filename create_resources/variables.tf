@@ -19,6 +19,11 @@ variable "dataset_id" {
   default     = "my_dataset"
 }
 
+variable "google_cloud_keyfile_json" {
+    description = "The cloud credentials"
+    type = string
+}
+
 variable "station_status_nrt_schema" {
   description = "Schema for STATION_STATUS_NRT table"
   type = list(object({
