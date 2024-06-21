@@ -69,7 +69,8 @@ jobs:
       run: | 
            terraform init # -input=false -backend-config="bucket=terraform_state_st" -backend-config="credentials=${{ github.workspace }}/gcloud-service-key.json"
       env:
-         TF_VAR_google_cloud_keyfile_json : gcloud-service-key.json # ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+         GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcloud-service-key.json
+         TF_VAR_google_cloud_keyfile_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }} # ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
       working-directory: create_resources
 
     - name: Validate Terraform
