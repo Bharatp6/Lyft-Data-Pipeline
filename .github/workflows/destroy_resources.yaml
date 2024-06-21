@@ -35,7 +35,7 @@ jobs:
       uses: hashicorp/setup-terraform@v1
 
     - name: Initialize Terraform
-      run: terraform init -input=false -backend-config="bucket=terraform_state_st" -backend-config="credentials=${{ github.workspace }}/gcloud-service-key.json"
+      run: terraform init
       env:
         GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcloud-service-key.json
         TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
