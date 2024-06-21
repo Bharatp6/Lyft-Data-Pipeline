@@ -35,13 +35,22 @@ jobs:
       uses: hashicorp/setup-terraform@v1
 
     - name: Initialize Terraform
-      run: terraform init
+      run: terraform init -input=false -backend-config="bucket=terraform_state_st" -backend-config="credentials=${{ github.workspace }}/gcloud-service-key.json"
       env:
         GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcloud-service-key.json
         TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
         TF_VAR_region: "us-central1"
         TF_VAR_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
       working-directory: create_resources
+
+    - name: List Terraform State
+      run: terraform state list
+      working-directory: create_resources
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcloud-service-key.json
+        TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
+        TF_VAR_region: "us-central1"
+        TF_VAR_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
 
     - name: Plan Destroy
       run: terraform plan -destroy -out=tfplan
