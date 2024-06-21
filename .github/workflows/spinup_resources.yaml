@@ -37,29 +37,28 @@ jobs:
 
 
 
-    # - name: Enable APIs
-    #   run: |
-    #     gcloud services enable artifactregistry.googleapis.com
-    #     gcloud services enable cloudbuild.googleapis.com
-    #     gcloud services enable cloudresourcemanager.googleapis.com
-    #     gcloud services enable cloudfunctions.googleapis.com
-    #     gcloud services enable iam.googleapis.com
-    #     gcloud services enable pubsub.googleapis.com
-    #     gcloud services enable storage.googleapis.com
-    #     gcloud services enable run.googleapis.com
-    #     gcloud services enable bigquery.googleapis.com
-    #     gcloud services enable bigquerydatatransfer.googleapis.com
-    #     gcloud services enable bigqueryconnection.googleapis.com
-    #     gcloud services enable servicemanagement.googleapis.com
-    #     gcloud services enable serviceusage.googleapis.com
-    #     gcloud services enable logging.googleapis.com
-    #     gcloud services enable monitoring.googleapis.com
-    #     gcloud services enable cloudtrace.googleapis.com
-    #     gcloud services enable stackdriver.googleapis.com
-    #     gcloud services enable eventarc.googleapis.com
-  
+    - name: Enable APIs
+      run: |
+        gcloud services enable artifactregistry.googleapis.com
+        gcloud services enable cloudbuild.googleapis.com
+        gcloud services enable cloudresourcemanager.googleapis.com
+        gcloud services enable cloudfunctions.googleapis.com
+        gcloud services enable iam.googleapis.com
+        gcloud services enable pubsub.googleapis.com
+        gcloud services enable storage.googleapis.com
+        gcloud services enable run.googleapis.com
+        gcloud services enable bigquery.googleapis.com
+        gcloud services enable bigquerydatatransfer.googleapis.com
+        gcloud services enable bigqueryconnection.googleapis.com
+        gcloud services enable servicemanagement.googleapis.com
+        gcloud services enable serviceusage.googleapis.com
+        gcloud services enable logging.googleapis.com
+        gcloud services enable monitoring.googleapis.com
+        gcloud services enable cloudtrace.googleapis.com
+        gcloud services enable stackdriver.googleapis.com
+        gcloud services enable eventarc.googleapis.com
 
-
+        
     - name: Install Terraform
       uses: hashicorp/setup-terraform@v1
       with:
@@ -67,7 +66,7 @@ jobs:
 
     - name: Initialize Terraform
       run: | 
-           terraform init # -input=false -backend-config="bucket=terraform_state_st" -backend-config="credentials=${{ github.workspace }}/gcloud-service-key.json"
+           terraform init 
       env:
          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcloud-service-key.json
          TF_VAR_google_cloud_keyfile_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }} # ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
