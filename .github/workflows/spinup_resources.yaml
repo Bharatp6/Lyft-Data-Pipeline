@@ -56,40 +56,40 @@ jobs:
         gcloud services enable eventarc.googleapis.com
 
         
-    - name: Install Terraform
-      uses: hashicorp/setup-terraform@v1
-      with:
-        working-directory: create_resources
+    # - name: Install Terraform
+    #   uses: hashicorp/setup-terraform@v1
+    #   with:
+    #     working-directory: create_resources
 
-    - name: Initialize Terraform
-      run: | 
-           terraform init 
-      env:
-         GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcloud-service-key.json
-         TF_VAR_google_cloud_keyfile_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }} # ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-      working-directory: create_resources
+    # - name: Initialize Terraform
+    #   run: | 
+    #        terraform init 
+    #   env:
+    #      GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcloud-service-key.json
+    #      TF_VAR_google_cloud_keyfile_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }} # ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+    #   working-directory: create_resources
 
-    - name: Validate Terraform
-      run: terraform validate
-      working-directory: create_resources
+    # - name: Validate Terraform
+    #   run: terraform validate
+    #   working-directory: create_resources
 
-    - name: Plan Terraform
-      run: terraform plan -out=tfplan -parallelism=10
-      working-directory: create_resources
-      env:
-        GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcloud-service-key.json
-        TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
-        TF_VAR_region: "us-central1"
-        TF_VAR_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
+    # - name: Plan Terraform
+    #   run: terraform plan -out=tfplan -parallelism=10
+    #   working-directory: create_resources
+    #   env:
+    #     GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcloud-service-key.json
+    #     TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
+    #     TF_VAR_region: "us-central1"
+    #     TF_VAR_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
 
-    - name: Apply Terraform
-      run: terraform apply -auto-approve tfplan
-      working-directory: create_resources
-      env:
-        GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcloud-service-key.json
-        TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
-        TF_VAR_region: "us-central1"
-        TF_VAR_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
+    # - name: Apply Terraform
+    #   run: terraform apply -auto-approve tfplan
+    #   working-directory: create_resources
+    #   env:
+    #     GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcloud-service-key.json
+    #     TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
+    #     TF_VAR_region: "us-central1"
+    #     TF_VAR_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
         
     # - name: Install dependencies
     #  run: |
@@ -101,24 +101,17 @@ jobs:
         #pip install gsutil
       # working-directory: create_resources/delta_table_script
 
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pandas deltalake google-cloud-storage gcsfs
+
     - name: Run the script
       env:
-        GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+        GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+        GOOGLE_CLOUD_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
       run: |
-          # pip install pyspark==3.5.1
-          # pip install delta-spark==3.2.0
-          pip install pandas 
-          pip install deltalake 
-          # pip install gsutil
-          
-    # - name: Add gsutil to PATH
-    #   run: |
-    #      echo "$(python -m site --user-base)/bin" >> $GITHUB_PATH
+        export GOOGLE_APPLICATION_CREDENTIALS=gcloud-service-key.json
+        export GOOGLE_CLOUD_PROJECT=${{ secrets.GCP_PROJECT_ID }}
+        python create_delta_tables_pandas.py
 
-    # - name: Verify gsutil
-    #   run: gsutil version
-
-    - name: run the python script
-      run: |
-         python create_delta_tables_pandas.py
-      working-directory: create_resources/delta_table_script
