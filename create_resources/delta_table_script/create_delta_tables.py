@@ -9,7 +9,7 @@ from delta import *
 builder = pyspark.sql.SparkSession.builder.appName("MyApp") \
     .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
     .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog") \
-    .config("spark.jars.packages", "com.google.cloud.bigdataoss:gcs-connector:hadoop3-2.2.5") 
+    #.config("spark.jars.packages", "com.google.cloud.bigdataoss:gcs-connector:hadoop3-2.2.5") 
     # .config("spark.hadoop.google.cloud.auth.service.account.enable", "true") \
     # .config("spark.hadoop.google.cloud.auth.service.account.json.keyfile", "/path/to/gcloud-service-key.json")
 
