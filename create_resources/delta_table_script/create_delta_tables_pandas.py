@@ -1,5 +1,11 @@
 import pandas as pd
 from deltalake import write_deltalake
+import gcsfs
+import os
+from google.cloud import storage
+
+# Set up Google Cloud Storage
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "gcloud-service-key.json"
 
 # Define the schema and create empty DataFrames
 schema_station_status_nrt = {
@@ -48,21 +54,24 @@ schema_weather = {
     "station_id": "object"
 }
 
-# Define the path of the GCS folders for the Delta tables
-ssn_path = "gs://your-bucket-name/station_status_nrt_delta_table"
-ssi_path = "gs://your-bucket-name/station_info_delta_table"
-w_path = "gs://your-bucket-name/weather_delta_table"
-
 # Create empty DataFrames
 df_station_status_nrt = pd.DataFrame({k: pd.Series(dtype=v) for k, v in schema_station_status_nrt.items()})
 df_station_info = pd.DataFrame({k: pd.Series(dtype=v) for k, v in schema_station_info.items()})
 df_weather = pd.DataFrame({k: pd.Series(dtype=v) for k, v in schema_weather.items()})
 
+# Define the path of the GCS folders for the Delta tables
+ssn_path = "gs://your-bucket-name/station_status_nrt_delta_table"
+ssi_path = "gs://your-bucket-name/station_info_delta_table"
+w_path = "gs://your-bucket-name/weather_delta_table"
+
+# Initialize GCS filesystem
+fs = gcsfs.GCSFileSystem(project=os.getenv("GOOGLE_CLOUD_PROJECT"))
+
 # Function to create a Delta table
 def create_delta_table(delta_path, df):
-    write_deltalake(delta_path, df)
+    write_deltalake(delta_path, df, filesystem=fs)
 
-# Execute the function
+# Execute the function to create Delta tables
 create_delta_table(ssn_path, df_station_status_nrt)
 create_delta_table(ssi_path, df_station_info)
 create_delta_table(w_path, df_weather)
