@@ -113,5 +113,5 @@ jobs:
       run: |
         export GOOGLE_APPLICATION_CREDENTIALS=gcloud-service-key.json
         export GOOGLE_CLOUD_PROJECT=${{ secrets.GCP_PROJECT_ID }}
-        python create_delta_tables_pandas.py
+        python create_resources/delta_table_script/create_delta_tables_pandas.py
 
