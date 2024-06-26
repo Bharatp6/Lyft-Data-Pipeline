@@ -91,21 +91,21 @@ jobs:
     #     TF_VAR_region: "us-central1"
     #     TF_VAR_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
         
-    - name: Install dependencies
-      run: |
-        pip install pyspark==3.5.1
-        pip install delta-spark==3.2.0
-        pip install google-cloud-storage
-        pip install gcsfs
+    # - name: Install dependencies
+    #   run: |
+    #     pip install pyspark==3.5.1
+    #     pip install delta-spark==3.2.0
+    #     pip install google-cloud-storage
+    #     pip install gcsfs
         # pip install google-cloud-storage==2.7.0
         # pip install google-auth==2.6.6
         #pip install gsutil
       # working-directory: create_resources/delta_table_script
 
-    # - name: Install dependencies
-    #   run: |
-    #     python -m pip install --upgrade pip
-    #     pip install pandas deltalake google-cloud-storage gcsfs
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pandas deltalake google-cloud-storage gcsfs
 
     - name: Run the script
       env:
@@ -114,5 +114,5 @@ jobs:
       run: |
         export GOOGLE_APPLICATION_CREDENTIALS=gcloud-service-key.json
         export GOOGLE_CLOUD_PROJECT=${{ secrets.GCP_PROJECT_ID }}
-        python create_resources/delta_table_script/create_delta_tables.py
+        python create_resources/delta_table_script/create_delta_tables_pandas.py
 
