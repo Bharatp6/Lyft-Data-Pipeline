@@ -9,7 +9,7 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "gcloud-service-key.json"
 
 # Define the schema and create empty DataFrames
 schema_station_status_nrt = {
-    "datetime": "2024-01-01",
+    "datetime": "1869-01-01 00:00:00",
     "station_id": "0",
     "num_bikes_available": 0,
     "vehicle_type_id_1": 0,
@@ -34,11 +34,11 @@ schema_station_info = {
     "lon": 0.0,
     "lat": 0.0,
     "capacity": 0,
-    "datetime": "0"
+    "datetime": "1869-01-01 00:00:00"
 }
 
 schema_weather = {
-    "datetime": "2024-01-01",
+    "datetime": "1869-01-01 00:00:00",
     "temperature_2m": 0.0,
     "wind_speed_10m": 0.0,
     "relative_humidity_2m": 0.0,
