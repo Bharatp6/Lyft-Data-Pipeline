@@ -1,9 +1,14 @@
 from pyspark.sql.types import StructType, StructField, StringType,FloatType,IntegerType, BooleanType ,TimestampType
 import pyspark
 from delta import *
+import gcsfs
+import os
+from google.cloud import storage
 #import gsutil
 #gustil.authenticate_with_service_account(os.getenv('GCP_SERVICE_ACCOUNT_KEY'))
 
+# Initialize GCS filesystem
+fs = gcsfs.GCSFileSystem(project=os.getenv("GOOGLE_CLOUD_PROJECT"))
 
 # Initialize SparkSession with Delta Lake configuration
 builder = pyspark.sql.SparkSession.builder.appName("MyApp") \
@@ -62,6 +67,10 @@ schema_weather = StructType([
     StructField("diffuse_radiation", FloatType(), True),
     StructField("station_id", StringType(), True)
 ])
+
+
+# Initialize GCS filesystem
+fs = gcsfs.GCSFileSystem(project=os.getenv("GOOGLE_CLOUD_PROJECT"))
 
 
 # Define the path of the gcs folders for the delta tables  
