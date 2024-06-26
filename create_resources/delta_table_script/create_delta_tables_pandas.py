@@ -9,49 +9,49 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "gcloud-service-key.json"
 
 # Define the schema and create empty DataFrames
 schema_station_status_nrt = {
-    "datetime": "1869-01-01 00:00:00",
-    "station_id": "0",
-    "num_bikes_available": 0,
-    "vehicle_type_id_1": 0,
-    "vehicle_type_id_2": 0,
-    "num_ebikes_available": 0,
-    "num_docks_available": 0,
-    "num_docks_disabled": 0,
-    "num_bikes_disabled": 0,
-    "num_scooters_available": 0,
-    "num_scooters_unavailable": 0,
-    "is_installed": True,
-    "is_renting": True,
-    "is_returning": True,
-    "last_reported": 0
+    "datetime": ["1869-01-01 00:00:00"],
+    "station_id": ["0"],
+    "num_bikes_available": [0],
+    "vehicle_type_id_1": [0],
+    "vehicle_type_id_2": [0],
+    "num_ebikes_available": [0],
+    "num_docks_available": [0],
+    "num_docks_disabled": [0],
+    "num_bikes_disabled": [0],
+    "num_scooters_available": [0],
+    "num_scooters_unavailable": [0],
+    "is_installed": [True],
+    "is_renting": [True],
+    "is_returning": [True],
+    "last_reported": [0]
 }
 
 schema_station_info = {
-    "station_id": "0",
-    "name": "0",
-    "short_name": "0",
-    "region_id": "0",
-    "lon": 0.0,
-    "lat": 0.0,
-    "capacity": 0,
-    "datetime": "1869-01-01 00:00:00"
+    "station_id": ["0"],
+    "name": ["0"],
+    "short_name": ["0"],
+    "region_id": ["0"],
+    "lon": [0.0],
+    "lat": [0.0],
+    "capacity": [0],
+    "datetime": ["1869-01-01 00:00:00"]
 }
 
 schema_weather = {
-    "datetime": "1869-01-01 00:00:00",
-    "temperature_2m": 0.0,
-    "wind_speed_10m": 0.0,
-    "relative_humidity_2m": 0.0,
-    "precipitation": 0.0,
-    "dew_point_2m": 0.0,
-    "rain": 0.0,
-    "showers": 0.0,
-    "snowfall": 0.0,
-    "wind_gusts_10m": 0.0,
-    "sunshine_duration": 0.0,
-    "visibility": 0.0,
-    "diffuse_radiation": 0.0,
-    "station_id": "0"
+    "datetime": ["1869-01-01 00:00:00"],
+    "temperature_2m": [0.0],
+    "wind_speed_10m": [0.0],
+    "relative_humidity_2m": [0.0],
+    "precipitation": [0.0],
+    "dew_point_2m": [0.0],
+    "rain": [0.0],
+    "showers": [0.0],
+    "snowfall": [0.0],
+    "wind_gusts_10m": [0.0],
+    "sunshine_duration": [0.0],
+    "visibility": [0.0],
+    "diffuse_radiation": [0.0],
+    "station_id": ["0"]
 }
 
 # Create empty DataFrames
