@@ -11,19 +11,19 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "gcloud-service-key.json"
 schema_station_status_nrt = {
     "datetime": "datetime64[ns]",
     "station_id": "object",
-    "num_bikes_available": "Int64",
-    "vehicle_type_id_1": "Int64",
-    "vehicle_type_id_2": "Int64",
-    "num_ebikes_available": "Int64",
-    "num_docks_available": "Int64",
-    "num_docks_disabled": "Int64",
-    "num_bikes_disabled": "Int64",
-    "num_scooters_available": "Int64",
-    "num_scooters_unavailable": "Int64",
+    "num_bikes_available": "int64",
+    "vehicle_type_id_1": "int64",
+    "vehicle_type_id_2": "int64",
+    "num_ebikes_available": "int64",
+    "num_docks_available": "int64",
+    "num_docks_disabled": "int64",
+    "num_bikes_disabled": "int64",
+    "num_scooters_available": "int64",
+    "num_scooters_unavailable": "int64",
     "is_installed": "boolean",
     "is_renting": "boolean",
     "is_returning": "boolean",
-    "last_reported": "Int64"
+    "last_reported": "int64"
 }
 
 schema_station_info = {
@@ -33,7 +33,7 @@ schema_station_info = {
     "region_id": "object",
     "lon": "float64",
     "lat": "float64",
-    "capacity": "Int64",
+    "capacity": "int64",
     "datetime": "datetime64[ns]"
 }
 
