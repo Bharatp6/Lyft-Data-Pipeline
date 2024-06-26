@@ -69,7 +69,7 @@ fs = gcsfs.GCSFileSystem(project=os.getenv("GOOGLE_CLOUD_PROJECT"))
 
 # Function to create a Delta table
 def create_delta_table(delta_path, df):
-    write_deltalake(delta_path, df, filesystem=fs)
+    write_deltalake(delta_path, df)
 
 # Execute the function to create Delta tables
 create_delta_table(ssn_path, df_station_status_nrt)
