@@ -60,9 +60,9 @@ df_station_info = pd.DataFrame({k: pd.Series(dtype=v) for k, v in schema_station
 df_weather = pd.DataFrame({k: pd.Series(dtype=v) for k, v in schema_weather.items()})
 
 # Define the path of the GCS folders for the Delta tables
-ssn_path = "gs://your-bucket-name/station_status_nrt_delta_table"
-ssi_path = "gs://your-bucket-name/station_info_delta_table"
-w_path = "gs://your-bucket-name/weather_delta_table"
+ssn_path = "gs://delta_table_bucket/station_status_nrt_delta_table"
+ssi_path = "gs://delta_table_bucket/station_info_delta_table"
+w_path = "gs://delta_table_bucket/weather_delta_table"
 
 # Initialize GCS filesystem
 fs = gcsfs.GCSFileSystem(project=os.getenv("GOOGLE_CLOUD_PROJECT"))
