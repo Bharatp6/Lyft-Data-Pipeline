@@ -15,10 +15,54 @@ resource "google_storage_bucket" "function_bucket" {
 resource "google_storage_bucket_object" "function_zip" {
   name   = "station_status.zip"
   bucket = google_storage_bucket.function_bucket.name
-  source = "${path.module}/get_station_status_zip/function.zip"
+  source = "${path.module}/lyft_stream-2.py"
 }
 
-# Create the Cloud Function
+
+# Create a VM Instance
+resource "google_compute_instance" "vm_instance" {
+  name         = "station-status-vm"
+  machine_type = var.machine_type
+  zone         = var.zone
+
+  boot_disk {
+    initialize_params {
+      image = "debian-cloud/debian-11-arm64"
+    }
+  }
+
+  network_interface {
+    network = "default"
+    access_config {
+      // Ephemeral public IP
+    }
+  }
+
+  metadata_startup_script = <<-EOF
+    #! /bin/bash
+    # Update and install Apache server
+    apt-get update
+    apt-get install -y apache2
+    # Start Apache server
+    systemctl start apache2
+    systemctl enable apache2
+
+    # Install pip and Python libraries
+    apt-get install -y python3-pip
+    pip3 install pandas gbfs-client
+
+    # Custom script can go here
+  EOF
+
+  service_account {
+    email  = var.service_account_email
+    scopes = ["https://www.googleapis.com/auth/cloud-platform"]
+  }
+
+  tags = ["http-server"]
+}
+
+/*# Create the Cloud Function
 resource "google_cloudfunctions2_function" "function" {
   project     = var.project_id
   name        = "station_status"
@@ -48,7 +92,7 @@ resource "google_cloudfunctions2_function" "function" {
 # Output the URL of the Cloud Function
 output "url" {
   value = google_cloudfunctions2_function.function.service_config[0].uri
-}
+}*/
 
 # Create a Pub/Sub topic
 resource "google_pubsub_topic" "station_status" {
