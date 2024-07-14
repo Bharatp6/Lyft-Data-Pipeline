@@ -1,5 +1,5 @@
 name: Deploy
- 
+
 on:
   push:
     tags:
@@ -31,8 +31,34 @@ jobs:
     - name: Authenticate to Google Cloud
       run: | 
            gcloud auth activate-service-account --key-file=gcloud-service-key.json
-           # gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
-           # gsutil mb -p ${{ secrets.GCP_PROJECT_ID }} -l us-central1 gs://terraform_state_st/
+    
+
+    # - name: Assigning resource manager
+    #   run: |
+    #     gcloud projects add-iam-policy-binding ${{ secrets.GCP_PROJECT_ID }} \
+    #            --member="serviceAccount:${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}" \
+    #            --role="roles/resourcemanager.projectIamAdmin"
+
+
+    # - name: Assign Service Usage Admin Role
+    #   run: |
+    #     gcloud projects add-iam-policy-binding ${{ secrets.GCP_PROJECT_ID }} \
+    #         --member="serviceAccount:${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}" \
+    #         --role="roles/serviceusage.serviceUsageAdmin"
+
+    # - name: Assign Storage Admin Role
+    #   run: |
+    #     gcloud projects add-iam-policy-binding ${{ secrets.GCP_PROJECT_ID }} \
+    #         --member="serviceAccount:${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}" \
+    #         --role="roles/storage.admin"
+
+    # - name: Creation of gcs bucket for terraform backend
+    #   run: |
+    #     gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
+    #        gsutil mb -p ${{ secrets.GCP_PROJECT_ID }} -l us-central1 gs://terraform_state_sta/
+    #commenting out as the gcs bucket is already created and the roles assigned
+
+            
 
     - name: Enable APIs
       run: |
@@ -54,42 +80,43 @@ jobs:
         gcloud services enable cloudtrace.googleapis.com
         gcloud services enable stackdriver.googleapis.com
         gcloud services enable eventarc.googleapis.com
+        gcloud services enable compute.googleapis.com
 
-        
-    # - name: Install Terraform
-    #   uses: hashicorp/setup-terraform@v1
-    #   with:
-    #     working-directory: create_resources
 
-    # - name: Initialize Terraform
-    #   run: | 
-    #        terraform init 
-    #   env:
-    #      GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcloud-service-key.json
-    #      TF_VAR_google_cloud_keyfile_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }} # ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-    #   working-directory: create_resources
+    - name: Install Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        working-directory: create_resources
 
-    # - name: Validate Terraform
-    #   run: terraform validate
-    #   working-directory: create_resources
+    - name: Initialize Terraform
+      run: | 
+           terraform init 
+      env:
+         GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcloud-service-key.json
+         TF_VAR_google_cloud_keyfile_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }} # ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+      working-directory: create_resources
 
-    # - name: Plan Terraform
-    #   run: terraform plan -out=tfplan -parallelism=10
-    #   working-directory: create_resources
-    #   env:
-    #     GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcloud-service-key.json
-    #     TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
-    #     TF_VAR_region: "us-central1"
-    #     TF_VAR_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
+    - name: Validate Terraform
+      run: terraform validate
+      working-directory: create_resources
 
-    # - name: Apply Terraform
-    #   run: terraform apply -auto-approve tfplan
-    #   working-directory: create_resources
-    #   env:
-    #     GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcloud-service-key.json
-    #     TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
-    #     TF_VAR_region: "us-central1"
-    #     TF_VAR_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
+    - name: Plan Terraform
+      run: terraform plan -out=tfplan -parallelism=10
+      working-directory: create_resources
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcloud-service-key.json
+        TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
+        TF_VAR_region: "us-central1"
+        TF_VAR_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
+
+    - name: Apply Terraform
+      run: terraform apply -auto-approve tfplan
+      working-directory: create_resources
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcloud-service-key.json
+        TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
+        TF_VAR_region: "us-central1"
+        TF_VAR_service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
         
     # - name: Install dependencies
     #   run: |
@@ -102,17 +129,16 @@ jobs:
         #pip install gsutil
       # working-directory: create_resources/delta_table_script
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pandas deltalake google-cloud-storage gcsfs
+    # - name: Install dependencies
+    #   run: |
+    #     python -m pip install --upgrade pip
+    #     pip install pandas deltalake google-cloud-storage gcsfs
 
-    - name: Run the script
-      env:
-        GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-        GOOGLE_CLOUD_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
-      run: |
-        export GOOGLE_APPLICATION_CREDENTIALS=gcloud-service-key.json
-        export GOOGLE_CLOUD_PROJECT=${{ secrets.GCP_PROJECT_ID }}
-        python create_resources/delta_table_script/create_delta_tables_pandas.py
-
+    # - name: Run the script
+    #   env:
+    #     GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+    #     GOOGLE_CLOUD_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
+    #   run: |
+    #     export GOOGLE_APPLICATION_CREDENTIALS=gcloud-service-key.json
+    #     export GOOGLE_CLOUD_PROJECT=${{ secrets.GCP_PROJECT_ID }}
+    #     python create_resources/delta_table_script/create_delta_tables_pandas.py
